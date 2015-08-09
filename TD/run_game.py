@@ -1,0 +1,3 @@
+import TD.__main__
+if __name__ == "__main__":
+    TD.__main__.main()
