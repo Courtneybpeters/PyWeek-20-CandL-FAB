@@ -1,0 +1,28 @@
+Data Data Data - Tower Defense
+
+Ridiculous 90's Hackers throwback
+Evil gov agency has sent nano robots to steal your data
+
+
+Designs:
+
+Lives
+-----------
+- DATA DATA DATA across the top and each letter is a life
+- If one robot gets past the firewall (end gate) a letter turns red
+- If all letters turn red you've lost the game
+
+Enemies
+-----------
+- Bugs have 0 or 1's because they're leaving with data
+- Little circle robots
+
+Path
+-----------
+- Path looks like a circuit
+- Background is a circuit board (or green background)
+- The main path is copper
+
+Weapons
+-----------
+- Play on antivirus software names
