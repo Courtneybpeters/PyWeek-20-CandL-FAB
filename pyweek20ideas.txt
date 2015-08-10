@@ -26,3 +26,10 @@ Path
 Weapons
 -----------
 - Play on antivirus software names
+
+
+
+
+UI
+- 1024x768 main window
+-64x64 grid of the map (16x12 cells)
