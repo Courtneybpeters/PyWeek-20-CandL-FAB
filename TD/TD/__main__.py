@@ -21,16 +21,22 @@ BOARD_WIDTH = 16
 BOARD_HEIGHT = 12
 
 BGCOLOR = (0,160,0)
+PATHCOLOR = (150,150,0)
+UIBGCOLOR = (125,125,125)
+PATHSTARTCOLOR = (0,0,255)
+PATHENDCOLOR = (255,0,0)
+
 class Map (object):
     def __init__(self, levelname):
         filename = levelname + ".txt"
         self.mapdata = []
-        for line in data.load(filename, 'r').read():
+        for line in data.load(filename, 'r').readlines():
             temp = []
-            for char in line:
-                temp.append(char)
+            for char in line.strip():
+                temp.append(int(char))
             self.mapdata.append(temp)
-
+    def get(self, x, y):
+        return TILETYPE[self.mapdata[x][y]]
 class Game (object):
     def __init__(self):
         self.state = "mainmenu"
@@ -48,21 +54,29 @@ class Game (object):
 
     def load_level(self, levelname):
         self.map = Map(levelname)
-    def draw(self):
-        for col in range(BOARD_WIDTH):
-            for row in range(BOARD_HEIGHT):
-                #draw map
-                pass
-                #if (map.)
 
-                #draw turrets
+    def draw(self, surface):
+        #surface.fill(BGCOLOR, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        for x in range(BOARD_WIDTH):
+            for y in range(BOARD_HEIGHT):
+                #draw map
+                cell = self.map.get(y,x)
+                fillcolor = BGCOLOR
+                if (cell == "path"):
+                    fillcolor = PATHCOLOR
+                elif (cell == "nobuild"):
+                    fillcolor = UIBGCOLOR
+                elif (cell == "pathstart"):
+                    fillcolor = PATHSTARTCOLOR
+                elif (cell == "pathend"):
+                    fillcolor = PATHENDCOLOR
+                surface.fill(fillcolor, (x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE))
+        #draw turrets
 
         #enemies and bullets aren't on grid
         #draw enemies
 
         #draw bullets
-
-        pass
 
 
 
@@ -71,7 +85,7 @@ def main():
 
     # initialize pygame window
     game = Game()
-
+    game.load_level("map1")
     #skip "mainmenu" state since we're in development
     game.set_state("playing")
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -80,7 +94,7 @@ def main():
     while not exit:
 
         #update screen
-        screen.fill(BGCOLOR, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        game.draw(screen)
         pygame.display.update()
 
         # event loop for user input
