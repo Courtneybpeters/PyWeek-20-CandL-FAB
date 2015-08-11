@@ -23,7 +23,7 @@ BOARD_HEIGHT = 12
 BGCOLOR = (0,160,0)
 PATHCOLOR = (150,150,0)
 UIBGCOLOR = (125,125,125)
-BLACK = (255, 255, 255)
+BLACK = (0, 0, 0)
 PATHSTARTCOLOR = (0,0,255)
 PATHENDCOLOR = (255,0,0)
 
@@ -131,7 +131,8 @@ def main():
     game.set_state("playing")
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    font = pygame.font.SysFont("Arial", 20)
+    font_filepath = data.load("brokeren.regular.ttf")
+    font = pygame.font.Font(font_filepath, 20)
 
 
     #Main Loop
