@@ -23,7 +23,7 @@ BOARD_HEIGHT = 12
 BGCOLOR = (0,160,0)
 PATHCOLOR = (150,150,0)
 UIBGCOLOR = (125,125,125)
-BLACK = (0, 0, 0)
+BLACK = (0,0,0)
 PATHSTARTCOLOR = (0,0,255)
 PATHENDCOLOR = (255,0,0)
 
@@ -70,7 +70,9 @@ class Game (object):
     def __init__(self):
         self.state = "mainmenu"
         self.elapsed = 0
-        self.data_txt = "DATA DATA DATA"
+        self.data_txt = "DATA! DATA! DATA!"
+        self.lives = 15
+        self.deaths = 3
 
     def set_state(self, state):
         self.state = state
@@ -111,6 +113,8 @@ class Game (object):
         data_txt_rect.y = 0
         surface.blit(data_txt_obj, data_txt_rect)
 
+
+
         #draw turrets
 
         #enemies and bullets aren't on grid
@@ -132,8 +136,7 @@ def main():
     pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     font_filepath = data.load("brokeren.regular.ttf")
-    font = pygame.font.Font(font_filepath, 20)
-
+    font = pygame.font.Font(font_filepath, 50)
 
     #Main Loop
     exit = False
@@ -146,7 +149,7 @@ def main():
         p += .0015
         p %= len(path)
         p2 = int(p)
-        screen.fill((0,0,0), (path[p2][0]*CELL_SIZE, path[p2][1]*CELL_SIZE, CELL_SIZE, CELL_SIZE))
+        screen.fill(BLACK, (path[p2][0]*CELL_SIZE, path[p2][1]*CELL_SIZE, CELL_SIZE, CELL_SIZE))
         pygame.display.update()
 
         # event loop for user input
