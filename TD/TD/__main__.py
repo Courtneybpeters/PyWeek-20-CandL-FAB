@@ -23,6 +23,7 @@ BOARD_HEIGHT = 12
 BGCOLOR = (0,160,0)
 PATHCOLOR = (150,150,0)
 UIBGCOLOR = (125,125,125)
+BLACK = (255, 255, 255)
 PATHSTARTCOLOR = (0,0,255)
 PATHENDCOLOR = (255,0,0)
 
@@ -69,6 +70,7 @@ class Game (object):
     def __init__(self):
         self.state = "mainmenu"
         self.elapsed = 0
+        self.data_txt = "DATA DATA DATA"
 
     def set_state(self, state):
         self.state = state
@@ -83,7 +85,9 @@ class Game (object):
     def load_level(self, levelname):
         self.map = Map(levelname)
 
-    def draw(self, surface):
+
+
+    def draw(self, surface, font):
         #surface.fill(BGCOLOR, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
         for x in range(BOARD_WIDTH):
             for y in range(BOARD_HEIGHT):
@@ -99,6 +103,14 @@ class Game (object):
                 elif (cell == "pathend"):
                     fillcolor = PATHENDCOLOR
                 surface.fill(fillcolor, (x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE))
+
+        # Lives - Data Data Data draw
+        data_txt_obj = font.render(self.data_txt, True, BLACK)
+        data_txt_rect = data_txt_obj.get_rect()
+        data_txt_rect.centerx = SCREEN_WIDTH / 2
+        data_txt_rect.y = 0
+        surface.blit(data_txt_obj, data_txt_rect)
+
         #draw turrets
 
         #enemies and bullets aren't on grid
@@ -117,14 +129,18 @@ def main():
     path = game.map.findpath()
     #skip "mainmenu" state since we're in development
     game.set_state("playing")
+    pygame.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    font = pygame.font.SysFont("Arial", 20)
+
+
     #Main Loop
     exit = False
     p = 0
     while not exit:
 
         #update screen
-        game.draw(screen)
+        game.draw(screen, font)
         #this is just a test to see a unit move along the path.
         p += .0015
         p %= len(path)
