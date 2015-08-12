@@ -109,11 +109,8 @@ class Game (object):
         # Lives - Data Data Data draw
         data_txt_obj = font.render(self.data_txt, True, BLACK)
         data_txt_rect = data_txt_obj.get_rect()
-        data_txt_rect.centerx = SCREEN_WIDTH / 2
-        data_txt_rect.y = 0
+        data_txt_rect.topright = ((1024 - 10), 0)    # 10 pixels of padding
         surface.blit(data_txt_obj, data_txt_rect)
-
-
 
         #draw turrets
 
