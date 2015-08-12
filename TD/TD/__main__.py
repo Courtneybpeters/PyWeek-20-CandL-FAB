@@ -95,18 +95,20 @@ class Turret (object):
             surface.blit(self.turret_image, (self.location[0]*CELL_SIZE, self.location[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE))
 
 class Lives (object):
+    DATA_TXT = "DATA! DATA! DATA!"
+
     def __init__(self, font, lives):
-        self.data_txt = "DATA! DATA! DATA!"
         self.font = font
         self.lives = lives
+        self.lives_txt = Lives.DATA_TXT[:self.lives + 2]
 
     def draw(self, surface):
         # Lives - Data Data Data draw
-        data_txt_obj = self.font.render(self.data_txt, True, BLACK)
-        data_txt_rect = data_txt_obj.get_rect()
-        data_txt_rect.topright = ((1024 - 10), 0)    # 10 pixels of padding
-        data_txt_rect.y = 0
-        surface.blit(data_txt_obj, data_txt_rect)
+        lives_txt_obj = self.font.render(self.lives_txt, True, BLACK)
+        lives_txt_rect = lives_txt_obj.get_rect()
+        lives_txt_rect.topright = ((1024 - 10), 0)    # 10 pixels of padding
+        lives_txt_rect.y = 0
+        surface.blit(lives_txt_obj, lives_txt_rect)
 
 class Game (object):
     def __init__(self, level, font_filename):
@@ -114,7 +116,7 @@ class Game (object):
         self.elapsed = 0
         self.map = self.load_level(level)
         self.font = self.load_font(font_filename)
-        self.lives = Lives(self.font, 15)
+        self.lives = Lives(self.font, 12)
         self.deaths = 3
 
     def set_state(self, state):
