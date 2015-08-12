@@ -39,6 +39,23 @@ class Map (object):
     def get(self, x, y):
         return TILETYPE[self.mapdata[y][x]]
 
+    def draw(self, surface):
+        #surface.fill(BGCOLOR, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
+        for x in range(BOARD_WIDTH):
+            for y in range(BOARD_HEIGHT):
+                #draw map
+                cell = self.get(x,y)
+                fillcolor = BGCOLOR
+                if (cell == "path"):
+                    fillcolor = PATHCOLOR
+                elif (cell == "nobuild"):
+                    fillcolor = UIBGCOLOR
+                elif (cell == "pathstart"):
+                    fillcolor = PATHSTARTCOLOR
+                elif (cell == "pathend"):
+                    fillcolor = PATHENDCOLOR
+                surface.fill(fillcolor, (x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE))
+
     def findpath(self):
         # determine where the start and end path are and then find all
         # consecutive paths between the start and end.
@@ -62,16 +79,42 @@ class Map (object):
                         current = cell
                         break
             solution.append(end)
-        print solution
         return solution
 
+class Turret (object):
+    def __init__(self, location, turret_type):
+        self.location = location
+        self.turret_type = turret_type
+        self.turret_image = self.load(turret_type)
+
+    def load(self, turret_type):
+        return pygame.image.load(data.load(turret_type+".png", 'rb'))
+
+    def draw(self, surface):
+        if self.turret_type == "turret1":
+            surface.blit(self.turret_image, (self.location[0]*CELL_SIZE, self.location[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE))
+
+class Lives (object):
+    def __init__(self, font, lives):
+        self.data_txt = "DATA! DATA! DATA!"
+        self.font = font
+        self.lives = lives
+
+    def draw(self, surface):
+        # Lives - Data Data Data draw
+        data_txt_obj = self.font.render(self.data_txt, True, BLACK)
+        data_txt_rect = data_txt_obj.get_rect()
+        data_txt_rect.topright = ((1024 - 10), 0)    # 10 pixels of padding
+        data_txt_rect.y = 0
+        surface.blit(data_txt_obj, data_txt_rect)
 
 class Game (object):
-    def __init__(self):
+    def __init__(self, level, font):
         self.state = "mainmenu"
         self.elapsed = 0
-        self.data_txt = "DATA! DATA! DATA!"
-        self.lives = 15
+        self.map = self.load_level(level)
+        self.font = self.load_font(font)
+        self.lives = Lives(self.font, 15)
         self.deaths = 3
 
     def set_state(self, state):
@@ -85,34 +128,28 @@ class Game (object):
         pass
 
     def load_level(self, levelname):
-        self.map = Map(levelname)
+        return Map(levelname)
 
+    def load_font(self, filename):
+        font_filepath = data.load(filename)
+        return pygame.font.Font(font_filepath, 50)
 
+    def click(self, x, y):
+        pass
 
-    def draw(self, surface, font):
-        #surface.fill(BGCOLOR, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
-        for x in range(BOARD_WIDTH):
-            for y in range(BOARD_HEIGHT):
-                #draw map
-                cell = self.map.get(x,y)
-                fillcolor = BGCOLOR
-                if (cell == "path"):
-                    fillcolor = PATHCOLOR
-                elif (cell == "nobuild"):
-                    fillcolor = UIBGCOLOR
-                elif (cell == "pathstart"):
-                    fillcolor = PATHSTARTCOLOR
-                elif (cell == "pathend"):
-                    fillcolor = PATHENDCOLOR
-                surface.fill(fillcolor, (x*CELL_SIZE, y*CELL_SIZE, CELL_SIZE, CELL_SIZE))
+    def draw(self, surface):
+        self.map.draw(surface)
 
-        # Lives - Data Data Data draw
-        data_txt_obj = font.render(self.data_txt, True, BLACK)
-        data_txt_rect = data_txt_obj.get_rect()
-        data_txt_rect.topright = ((1024 - 10), 0)    # 10 pixels of padding
-        surface.blit(data_txt_obj, data_txt_rect)
+        #draw UI
+        self.lives.draw(surface)
 
         #draw turrets
+        turrets = []
+        turrets.append(Turret((9, 5), "turret1"))
+        turrets.append(Turret((5, 6), "turret1"))
+
+        for turret in turrets:
+            turret.draw(surface)
 
         #enemies and bullets aren't on grid
         #draw enemies
@@ -123,17 +160,14 @@ class Game (object):
 
 
 def main():
-
     # initialize pygame window
-    game = Game()
-    game.load_level("map1")
+    pygame.init()
+    pygame.display.init()
+    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+    game = Game("map1", "brokeren.regular.ttf")
     path = game.map.findpath()
     #skip "mainmenu" state since we're in development
     game.set_state("playing")
-    pygame.init()
-    screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-    font_filepath = data.load("brokeren.regular.ttf")
-    font = pygame.font.Font(font_filepath, 50)
 
     #Main Loop
     exit = False
@@ -141,7 +175,7 @@ def main():
     while not exit:
 
         #update screen
-        game.draw(screen, font)
+        game.draw(screen)
         #this is just a test to see a unit move along the path.
         p += .0015
         p %= len(path)
