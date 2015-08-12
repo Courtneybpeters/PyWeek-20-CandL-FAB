@@ -100,13 +100,15 @@ class Lives (object):
     def __init__(self, font, lives):
         self.font = font
         self.lives = lives
-        self.lives_txt = Lives.DATA_TXT[:self.lives + 2]
+        self.lives_txt = Lives.DATA_TXT[:self.lives + (self.lives / 5)]
+        # size = font.size("Data! Data! Data!")
+        # print "Size", size
 
     def draw(self, surface):
         # Lives - Data Data Data draw
         lives_txt_obj = self.font.render(self.lives_txt, True, BLACK)
         lives_txt_rect = lives_txt_obj.get_rect()
-        lives_txt_rect.topright = ((1024 - 10), 0)    # 10 pixels of padding
+        lives_txt_rect.topleft = (600, 0)    # 10 pixels of padding
         lives_txt_rect.y = 0
         surface.blit(lives_txt_obj, lives_txt_rect)
 
