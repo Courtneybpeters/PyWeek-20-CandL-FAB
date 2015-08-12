@@ -96,6 +96,9 @@ class Turret (object):
         if self.turret_type == "turret1":
             surface.blit(self.turret_image, (self.location[0]*CELL_SIZE, self.location[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE))
 
+
+
+
 class Lives (object):
     DATA_TXT = "DATA! DATA! DATA!"
 
@@ -132,6 +135,12 @@ class Money(object):
         money_txt_rect.topleft = (10, 0)
         surface.blit(money_txt_obj, money_txt_rect)
 
+    def draw_store(self, surface):
+        turret = pygame.image.load(data.load("test_turret.png", 'rb'))
+        bomb = pygame.image.load(data.load("bomb.png", 'rb'))
+
+        surface.blit(turret, (0, 704))
+        surface.blit(bomb, (70, 704))
 
 
 
@@ -163,14 +172,16 @@ class Game (object):
     def click(self, x, y):
         pass
 
+
+
     def draw(self, surface):
         self.map.draw(surface)
 
         #draw UI
         #TODO: Money and lives in one UI class?
         self.lives.draw(surface)
-
         self.money.draw(surface)
+        self.money.draw_store(surface)
 
         #draw turrets
         turrets = []
