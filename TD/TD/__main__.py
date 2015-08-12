@@ -27,6 +27,8 @@ BLACK = (0,0,0)
 PATHSTARTCOLOR = (0,0,255)
 PATHENDCOLOR = (255,0,0)
 
+#TODO: Global font?
+
 class Map (object):
     def __init__(self, levelname):
         filename = levelname + ".txt"
@@ -112,14 +114,35 @@ class Lives (object):
         lives_txt_rect.y = 0
         surface.blit(lives_txt_obj, lives_txt_rect)
 
+class Money(object):
+    def __init__(self, font):
+        self.value = 0
+        self.font = font
+
+    def purchase(self, cost):
+        self.value -= cost
+
+    def earn(self, gain):
+        self.value += gain
+
+    def draw(self, surface):
+        money_txt = "$" + str(self.value)
+        money_txt_obj = self.font.render(money_txt, True, BLACK)
+        money_txt_rect = money_txt_obj.get_rect()
+        money_txt_rect.topleft = (10, 0)
+        surface.blit(money_txt_obj, money_txt_rect)
+
+
+
+
 class Game (object):
     def __init__(self, level, font_filename):
         self.state = "mainmenu"
         self.elapsed = 0
         self.map = self.load_level(level)
         self.font = self.load_font(font_filename)
-        self.lives = Lives(self.font, 12)
-        self.deaths = 3
+        self.lives = Lives(self.font, 15)
+        self.money = Money(self.font)
 
     def set_state(self, state):
         self.state = state
@@ -144,7 +167,10 @@ class Game (object):
         self.map.draw(surface)
 
         #draw UI
+        #TODO: Money and lives in one UI class?
         self.lives.draw(surface)
+
+        self.money.draw(surface)
 
         #draw turrets
         turrets = []
