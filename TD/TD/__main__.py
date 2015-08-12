@@ -109,11 +109,11 @@ class Lives (object):
         surface.blit(data_txt_obj, data_txt_rect)
 
 class Game (object):
-    def __init__(self, level, font):
+    def __init__(self, level, font_filename):
         self.state = "mainmenu"
         self.elapsed = 0
         self.map = self.load_level(level)
-        self.font = self.load_font(font)
+        self.font = self.load_font(font_filename)
         self.lives = Lives(self.font, 15)
         self.deaths = 3
 
@@ -131,8 +131,7 @@ class Game (object):
         return Map(levelname)
 
     def load_font(self, filename):
-        font_filepath = data.load(filename)
-        return pygame.font.Font(font_filepath, 50)
+         return pygame.font.Font(data.filepath(filename), 50)
 
     def click(self, x, y):
         pass
