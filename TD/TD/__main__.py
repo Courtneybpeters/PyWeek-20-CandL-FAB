@@ -121,6 +121,7 @@ class Money(object):
     def __init__(self, font):
         self.value = 0
         self.font = font
+        self.buttons = False # Flag for making buttons out of the images
 
     def purchase(self, cost):
         self.value -= cost
@@ -138,10 +139,33 @@ class Money(object):
     def draw_store(self, surface):
         turret = pygame.image.load(data.load("test_turret.png", 'rb'))
         bomb = pygame.image.load(data.load("bomb.png", 'rb'))
+        t_buy_rect = pygame.Rect((0, 704), (64, 64))
+        b_buy_rect = pygame.Rect((70, 704), (64, 64))
+        surface.blit(turret, t_buy_rect.topleft)
+        surface.blit(bomb, b_buy_rect.topleft)
 
-        surface.blit(turret, (0, 704))
-        surface.blit(bomb, (70, 704))
+        if not self.buttons:
+            Buttons.add_button({"t_buy":t_buy_rect, "b_buy":b_buy_rect})
+            self.buttons = True
 
+
+class Buttons(object):
+    buttons = {}
+
+    def __init__(self):
+        pass
+
+    @staticmethod
+    def add_button(rects): # Dictionary button name: rect
+        for label, rect in rects.iteritems():
+            Buttons.buttons[label] = rect
+        print Buttons.buttons
+
+    @staticmethod
+    def get_button(x, y):
+        for label, button in Buttons.buttons.iteritems():
+            if button.collidepoint(x, y):
+                return label
 
 
 class Game (object):
@@ -152,6 +176,7 @@ class Game (object):
         self.font = self.load_font(font_filename)
         self.lives = Lives(self.font, 15)
         self.money = Money(self.font)
+        buttons = Buttons()
 
     def set_state(self, state):
         self.state = state
@@ -170,7 +195,8 @@ class Game (object):
          return pygame.font.Font(data.filepath(filename), 50)
 
     def click(self, x, y):
-        pass
+        selection = Buttons.get_button(x, y)
+        print selection
 
 
 
@@ -229,6 +255,10 @@ def main():
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     exit = True
+            if event.type == MOUSEBUTTONDOWN:
+                x, y = event.pos
+                game.click(x, y)
+
             elif event.type == QUIT:
                 pygame.quit()
                 exit = True
