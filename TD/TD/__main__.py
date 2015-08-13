@@ -129,6 +129,7 @@ class Money(object):
     def purchase(self, weapon):
         cost = self.costs[weapon]
         self.value -= cost
+        print weapon, " purchased"
 
     def can_buy(self, price):
         if price > self.value:
