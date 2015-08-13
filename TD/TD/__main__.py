@@ -119,12 +119,20 @@ class Lives (object):
 
 class Money(object):
     def __init__(self, font):
-        self.value = 0
+        self.value = 35 # Player always starts with a little cash to start
         self.font = font
+        self.costs = {"turret": 10, "bomb": 15}
         self.buttons = False # Flag for making buttons out of the images
 
-    def purchase(self, cost):
+    def purchase(self, weapon):
+        cost = self.costs[weapon]
         self.value -= cost
+
+    def can_buy(self, price):
+        if price > self.value:
+            return False
+        else:
+            return True
 
     def earn(self, gain):
         self.value += gain
