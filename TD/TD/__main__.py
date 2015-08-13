@@ -98,8 +98,9 @@ class Turret (object):
         if self.turret_type == "turret1":
             surface.blit(self.turret_image, (self.location[0]*CELL_SIZE, self.location[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE))
 
-
-
+class Bomb(object):
+    def __init__(self, location):
+        self.location = location
 
 class Lives (object):
     DATA_TXT = "DATA! DATA! DATA!"
