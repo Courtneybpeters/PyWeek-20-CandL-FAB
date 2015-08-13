@@ -209,12 +209,23 @@ class Game (object):
     def click(self, x, y):
         selection = Buttons.get_button(x, y)
 
+
+        # Purchasing
         if "buy" in selection:
-            if "t" in selection:
-                if self.money.can_buy(self.money.costs["turret"]):
-                    self.money.purchase("turret")
+            if "t_" in selection:
+                weapon = "turret"
                     # TODO: Function that handles placement
+            elif "b_" in selection:
+                weapon = "bomb"
+
+            if self.money.can_buy(self.money.costs[weapon]):
+                self.money.purchase(weapon)
+                if weapon == "turret":
                     self.turrets.append(Turret((9, 5), "turret1"))
+                if weapon == "bomb":
+                    pass
+                    # add bomb function
+
 
     def draw(self, surface):
         self.map.draw(surface)
