@@ -40,6 +40,7 @@ class Map (object):
             for char in line.strip():
                 temp.append(int(char))
             self.mapdata.append(temp)
+
     def get(self, x, y):
         return TILETYPE[self.mapdata[y][x]]
 
@@ -160,7 +161,6 @@ class Money(object):
             Buttons.add_button({"t_buy":t_buy_rect, "b_buy":b_buy_rect})
             self.buttons = True
 
-
 class Buttons(object):
     buttons = {}
 
@@ -188,7 +188,9 @@ class Game (object):
         self.font = self.load_font(font_filename)
         self.lives = Lives(self.font, 15)
         self.money = Money(self.font)
-        self.turrets = []
+        self.turrets = [] #TODO: Weapons class?
+        self.bombs = []
+        self.weapons = {"turrets":self.turrets, "bombs":self.bombs}
         buttons = Buttons()
 
     def set_state(self, state):
@@ -226,6 +228,15 @@ class Game (object):
                 if weapon == "bomb":
                     pass
                     # add bomb function
+
+    def place_weapon(self, x, y, weapon):
+        pass
+        # if self.map.get(x, y) ==
+        # check color of pixel?
+        # break the map up into rects?
+        # HALP
+
+
 
 
     def draw(self, surface):
@@ -280,6 +291,8 @@ def main():
                     exit = True
             if event.type == MOUSEBUTTONDOWN:
                 x, y = event.pos
+                if Map.map_rect.collidepoint(x, y): # Check if click on map
+                    pass # TODO: Placement function
                 game.click(x, y)
 
             elif event.type == QUIT:
