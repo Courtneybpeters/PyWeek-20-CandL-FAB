@@ -184,6 +184,7 @@ class Game (object):
         self.font = self.load_font(font_filename)
         self.lives = Lives(self.font, 15)
         self.money = Money(self.font)
+        self.turrets = []
         buttons = Buttons()
 
     def set_state(self, state):
@@ -204,9 +205,13 @@ class Game (object):
 
     def click(self, x, y):
         selection = Buttons.get_button(x, y)
-        print selection
 
-
+        if "buy" in selection:
+            if "t" in selection:
+                if self.money.can_buy(self.money.costs["turret"]):
+                    self.money.purchase("turret")
+                    # TODO: Function that handles placement
+                    self.turrets.append(Turret((9, 5), "turret1"))
 
     def draw(self, surface):
         self.map.draw(surface)
@@ -218,20 +223,15 @@ class Game (object):
         self.money.draw_store(surface)
 
         #draw turrets
-        turrets = []
-        turrets.append(Turret((9, 5), "turret1"))
-        turrets.append(Turret((5, 6), "turret1"))
+        # turrets.append(Turret((5, 6), "turret1"))
 
-        for turret in turrets:
+        for turret in self.turrets:
             turret.draw(surface)
 
         #enemies and bullets aren't on grid
         #draw enemies
 
         #draw bullets
-
-
-
 
 def main():
     # initialize pygame window
