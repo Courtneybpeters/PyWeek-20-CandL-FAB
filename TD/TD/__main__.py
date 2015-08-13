@@ -27,9 +27,11 @@ BLACK = (0,0,0)
 PATHSTARTCOLOR = (0,0,255)
 PATHENDCOLOR = (255,0,0)
 
-#TODO: Global font?
+#TODO: Global font????????
 
 class Map (object):
+    map_rect = pygame.Rect((0, 65), (1024, 640))
+
     def __init__(self, levelname):
         filename = levelname + ".txt"
         self.mapdata = []
