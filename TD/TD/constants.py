@@ -25,3 +25,10 @@ PATHENDCOLOR = (255,0,0)
 
 HEALTH_TXT = "DATA! DATA! DATA!"
 ROTATABLE = {"turret": True, "bomb": False}
+RANGE = {"turret": 300, "bomb": 150}
+SPLASH = {"turret": 5, "bomb": 100}
+FIRE_SPEED = {"turret": 100, "bomb": 200}
+BULLET_COLOR = {"turret": (0,0,255), "bomb":(255,0,0)}
+BULLET_SPEED = {"turret": 5, "bomb": 2}
+BULLET_SIZE = {"turret": 4, "bomb": 12}
+DAMAGE = {"turret": 50, "bomb": 250}

@@ -21,6 +21,7 @@ class Game (object):
         self.buttons = [Button("turret", (0, SCREEN_HEIGHT-CELL_SIZE)),
                         Button("bomb", (CELL_SIZE*2, SCREEN_HEIGHT-CELL_SIZE)),
                        ]
+        self.bullets = {}
         self.units = {}
         self.active_button = None
         #todo: support multiple units
@@ -42,12 +43,27 @@ class Game (object):
         if (self.elapsed % 500 == 0):
             self.units[utils.get_id()] = Unit("strongman", 1000, 3, self.path)
             #test hurting all units 5 HP
-            for id, unit in self.units.iteritems():
-                unit.hurt(100)
+            #for id, unit in self.units.iteritems():
+                #unit.hurt(100)
         elif (self.elapsed % 500 == 250):
             self.units[utils.get_id()] = Unit("quickman", 500, 6, self.path)
 
+
         for i in range(steps): #simulate the world for x steps
+            for weapon in self.weapons:
+                weapon.step()
+            dead_bullets = []
+            for id, bullet in self.bullets.iteritems():
+                if bullet.has_hit():
+                    dead_bullets.append(id)
+                    #TODO: implement a damage radius
+                    bullet.target_unit.hurt(bullet.damage)
+                else:
+                    bullet.move()
+
+            for unit_id in dead_bullets:
+                del self.bullets[unit_id]
+
             dead_units = []
             for id, unit in self.units.iteritems():
                 if unit.is_dead():
@@ -61,6 +77,7 @@ class Game (object):
                     unit.move()
             for unit_id in dead_units:
                 del self.units[unit_id]
+
 
 
             #TODO: check if unit has reached the end and subtract a life.
@@ -146,3 +163,5 @@ class Game (object):
             unit.draw(surface)
 
         #draw bullets
+        for id, bullet in self.bullets.iteritems():
+            bullet.draw(surface)
