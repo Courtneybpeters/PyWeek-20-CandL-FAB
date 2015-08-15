@@ -39,12 +39,12 @@ class Game (object):
         steps = int(self.elapsed) - int(prev_elapsed)
 
         #for tests, spawn a unit every 100 steps and hurt all units every 100 steps
-        if (self.elapsed % 1000 == 0):
+        if (self.elapsed % 100 == 0):
             self.units[utils.get_id()] = Unit("strongman", 1000, 3, self.path)
             #test hurting all units 5 HP
             for id, unit in self.units.iteritems():
                 unit.hurt(100)
-        elif (self.elapsed % 1000 == 500):
+        elif (self.elapsed % 100 == 50):
             self.units[utils.get_id()] = Unit("quickman", 500, 6, self.path)
 
         for i in range(steps): #simulate the world for x steps
@@ -88,7 +88,7 @@ class Game (object):
                 map_y = y / CELL_SIZE
                 if self.map.can_place(map_x, map_y):
                     name = self.active_button.name
-                    weapon = Weapon(map_x, map_y, self.active_button.name,  self.costs[name])
+                    weapon = Weapon(map_x, map_y, self.active_button.name,  self.costs[name], self)
                     if self.money.can_buy(weapon):
                         self.money.buy(weapon)
                         self.weapons.append(weapon)

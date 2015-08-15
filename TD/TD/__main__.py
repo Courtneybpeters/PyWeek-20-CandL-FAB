@@ -9,12 +9,14 @@ def main():
     pygame.display.init()
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     game = Game("map1", "brokeren.regular.ttf")
-
+    clock = pygame.time.Clock()
     #Main Loop
     exit = False
     p = 0
     while not exit:
-
+        text = "FPS: {0:.2f}".format(clock.get_fps())
+        pygame.display.set_caption(text)
+        clock.tick(100)
         #update screen
         game.step(1)
         game.draw(screen)

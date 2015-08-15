@@ -16,12 +16,12 @@ class Unit(object):
 
     def unslow(self, factor):
         self.slowfactor = 1
-        
+
     def is_dead(self):
         return self.health < 0
 
     def move(self):
-        self.position += (self.speed / 10.0) * self.slowfactor
+        self.position += (self.speed / 10.0) * 2.5 * self.slowfactor
 
     def draw(self, surface):
         p = int(self.position)
