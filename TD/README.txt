@@ -1,12 +1,15 @@
-Your Game Title
+TD
 ===============
 
-Entry in PyWeek #12  <http://www.pyweek.org/12/>
-URL: http://pyweek.org/e/TD
-Team: YOUR TEAM NAME (leave the "Team: bit")
-Members: YOUR TEAM MEMBERS (leave the "Members: bit")
+Entry in PyWeek #12  <http://www.pyweek.org/20/>
+URL: https://pyweek.org/e/CandL-FAB-20/
+Team: CandL
+Members: Luke Paireepinart and Courtney Peters
 License: see LICENSE.txt
-
+Artwork: Courtney Peters
+Sound effects: http://www.bfxr.net/
+Music: http://wrathgames.com/blog/free-development-resources/music/
+License: The MIT License
 
 Running the Game
 ----------------
@@ -17,18 +20,20 @@ Othewise open a terminal / console and "cd" to the game directory and run:
 
   python run_game.py
 
+Dependencies
+--------------------
+Pygame
+Python 2.7.10
+
 
 How to Play the Game
 --------------------
 
+Buy weapons and keep the nano robots from stealing all your data! If you lose
+all the data at the top right, you lose the game!
 
 
-Move the cursor around the screen with the mouse.
-
-Press the left mouse button to fire the ducks.
-
-
-Development notes 
+Development notes
 -----------------
 
 Creating a source distribution with::
@@ -48,4 +53,3 @@ Upload to the Python Package Index with::
 
    python setup.py register
    python setup.py sdist upload
-
