@@ -23,3 +23,12 @@ def lerp(pos1, pos2):
             else: #interpolation in the negative direction
                 items.append((pos1[0]-i, pos1[1]))
     return items
+
+def aim_at(pos1, pos2):
+    deltax = pos1[0] - pos2[0]
+    deltay = pos1[1] - pos2[1]
+    angle = math.atan2(deltax, deltay)/math.pi*180.0
+    return angle
+
+def distance(pos1, pos2):
+    return math.hypot(pos2[0] - pos1[0], pos2[1] - pos1[1])

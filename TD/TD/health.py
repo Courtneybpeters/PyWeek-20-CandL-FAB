@@ -4,9 +4,12 @@ class Health(object):
     def __init__(self, font, health):
         self.font = font
         self.health = health
-        self.health_txt = HEALTH_TXT[:self.health + (self.health / 5)]
+        self.health_txt = HEALTH_TXT
         # size = font.size("Data! Data! Data!")
         # print "Size", size
+    def hurt(self, amount):
+        self.health -= amount
+        self.health_txt = HEALTH_TXT[:self.health + (self.health / 5)]
 
     def draw(self, surface):
         # Health - Data Data Data draw

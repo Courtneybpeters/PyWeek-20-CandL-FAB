@@ -19,9 +19,18 @@ class Unit(object):
 
     def is_dead(self):
         return self.health < 0
+    def has_won(self):
+        return int(self.position) >= len(self.path)-1
 
     def move(self):
         self.position += (self.speed / 10.0) * 2.5 * self.slowfactor
+
+    def get_map_center(self):
+        return (self.get_location()[0] + (CELL_SIZE / 2), self.get_location()[1] + (CELL_SIZE / 2))
+
+    def get_location(self):
+        p = int(self.position)
+        return (self.path[p][0], self.path[p][1])
 
     def draw(self, surface):
         p = int(self.position)

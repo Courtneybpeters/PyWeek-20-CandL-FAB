@@ -24,3 +24,4 @@ PATHSTARTCOLOR = (0,0,255)
 PATHENDCOLOR = (255,0,0)
 
 HEALTH_TXT = "DATA! DATA! DATA!"
+ROTATABLE = {"turret": True, "bomb": False}
