@@ -1,9 +1,7 @@
-import pygame, data, sys, os
+import pygame, data, sys, os, utils
 from constants import *
 
 class Map (object):
-    map_rect = pygame.Rect((0, 65), (1024, 640))
-
     def __init__(self, levelname):
         filename = levelname + ".txt"
         self.mapdata = []
@@ -53,14 +51,21 @@ class Map (object):
         if (start != None and end != None):
             # find path from start to end.
             current = start
-            solution = []
+            mapsolution = []
             while current != end:
-                solution.append(current)
+                mapsolution.append(current)
                 #find a cell up, down, left or right of our current that's not in used_paths.
                 testcells = [(current[0]-1, current[1]), (current[0],current[1]-1), (current[0]+1, current[1]), (current[0], current[1]+1)]
                 for cell in testcells:
-                    if cell not in solution and 0 < cell[0] < BOARD_WIDTH and 0 < cell[1] < BOARD_HEIGHT and self.get(cell[0], cell[1]) in ["pathstart", "pathend", "path"]:
+                    if cell not in mapsolution and 0 < cell[0] < BOARD_WIDTH and 0 < cell[1] < BOARD_HEIGHT and self.get(cell[0], cell[1]) in ["pathstart", "pathend", "path"]:
                         current = cell
                         break
-            solution.append(end)
+            mapsolution.append(end)
+        solution = []
+        #convert solution to screen coordinates
+        #path.append(basepath.pop(0))
+        while len(mapsolution) > 1:
+            solution.extend(utils.lerp((mapsolution[0][0]*CELL_SIZE, mapsolution[0][1]*CELL_SIZE), \
+                                   (mapsolution[1][0]*CELL_SIZE, mapsolution[1][1]*CELL_SIZE)))
+            mapsolution.pop(0)
         return solution

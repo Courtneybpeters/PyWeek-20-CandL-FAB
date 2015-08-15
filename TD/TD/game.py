@@ -5,12 +5,14 @@ from health import *
 from money import *
 from button import *
 from weapon import *
+from unit import *
 
 class Game (object):
     def __init__(self, level, font_filename):
         self.state = "mainmenu"
         self.elapsed = 0
         self.map = self.load_level(level)
+        self.path = self.map.findpath()
         self.font = self.load_font(font_filename)
         self.health = Health(self.font, 15)
         self.money = Money(self.font, 150)
@@ -19,19 +21,47 @@ class Game (object):
         self.buttons = [Button("turret", (0, SCREEN_HEIGHT-CELL_SIZE)),
                         Button("bomb", (CELL_SIZE*2, SCREEN_HEIGHT-CELL_SIZE)),
                        ]
+        self.units = {}
         self.active_button = None
-        #self.weapons = {"turrets":self.turrets, "bombs":self.bombs}
-        #self.buy = ""
+        #todo: support multiple units
+        self.unit_position = 0
 
     def set_state(self, state):
         self.state = state
 
-    def step(self, amount): #simulate the world for x steps (amount is a float)
+    def step(self, amount):
         #don't simulate world if game is paused.
         if self.state == "paused":
             return
-        #TODO: simulate game world
-        pass
+
+        prev_elapsed = int(self.elapsed)
+        self.elapsed += amount
+        steps = int(self.elapsed) - int(prev_elapsed)
+
+        #for tests, spawn a unit every 100 steps and hurt all units every 100 steps
+        if (self.elapsed % 1000 == 0):
+            self.units[utils.get_id()] = Unit("strongman", 1000, 3, self.path)
+            #test hurting all units 5 HP
+            for id, unit in self.units.iteritems():
+                unit.hurt(100)
+        elif (self.elapsed % 1000 == 500):
+            self.units[utils.get_id()] = Unit("quickman", 500, 6, self.path)
+
+        for i in range(steps): #simulate the world for x steps
+            dead_units = []
+            for id, unit in self.units.iteritems():
+                if unit.is_dead():
+                    dead_units.append(id)
+                    self.money.earn(10)
+                else:
+                    unit.move()
+            for unit_id in dead_units:
+                del self.units[unit_id]
+
+
+            #TODO: check if unit has reached the end and subtract a life.
+
+
 
     def load_level(self, levelname):
         return Map(levelname)
@@ -94,16 +124,12 @@ class Game (object):
 
     def draw(self, surface):
         self.map.draw(surface)
-
         #draw UI
-        #TODO: Money and lives in one UI class?
         self.health.draw(surface)
         self.money.draw(surface)
         self.money.draw_store(surface)
 
-        #draw turrets
-        # turrets.append(Weapon((5, 6), "turret1"))
-
+        #draw weapons
         for weapon in self.weapons:
             weapon.draw(surface)
 
@@ -112,5 +138,7 @@ class Game (object):
             button.draw(surface)
         #enemies and bullets aren't on grid
         #draw enemies
+        for id, unit in self.units.iteritems():
+            unit.draw(surface)
 
         #draw bullets
