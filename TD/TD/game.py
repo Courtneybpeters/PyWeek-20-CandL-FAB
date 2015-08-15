@@ -27,6 +27,8 @@ class Game (object):
         #todo: support multiple units
         self.unit_position = 0
 
+        self.lifelost = pygame.mixer.Sound(data.filepath("LiveLost.wav"))
+
     def set_state(self, state):
         self.state = state
 
@@ -58,6 +60,7 @@ class Game (object):
                     dead_bullets.append(id)
                     #TODO: implement a damage radius
                     bullet.target_unit.hurt(bullet.damage)
+                    bullet.sfx.play()
                 else:
                     bullet.move()
 
@@ -73,6 +76,7 @@ class Game (object):
                     print "Unit won!"
                     dead_units.append(id)
                     self.health.hurt(1)
+                    self.lifelost.play()
                 else:
                     unit.move()
             for unit_id in dead_units:

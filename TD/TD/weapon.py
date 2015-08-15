@@ -19,6 +19,7 @@ class Weapon(object):
         self.bullet_speed = BULLET_SPEED[self.name]
         self.damage = DAMAGE[self.name]
         self.bullet_size = BULLET_SIZE[self.name]
+        self.sfx = pygame.mixer.Sound(data.filepath(SFX[self.name]))
         self.game = game #reference to game object so we can get the current
         #position of the main unit
 
@@ -37,7 +38,7 @@ class Weapon(object):
 
     def fire(self, target_unit):
         #TODO: use a method to add the bullets instead
-        self.game.bullets[utils.get_id()] = Bullet(self.bullet_speed, [self.get_map_center()[0], self.get_map_center()[1]], target_unit, self.bullet_color, self.bullet_size, self.damage)
+        self.game.bullets[utils.get_id()] = Bullet(self.bullet_speed, [self.get_map_center()[0], self.get_map_center()[1]], target_unit, self.bullet_color, self.bullet_size, self.sfx, self.damage)
         self.regen = 0
 
     def load(self, name):

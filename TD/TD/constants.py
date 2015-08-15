@@ -32,3 +32,5 @@ BULLET_COLOR = {"turret": (0,0,255), "bomb":(255,0,0)}
 BULLET_SPEED = {"turret": 5, "bomb": 2}
 BULLET_SIZE = {"turret": 4, "bomb": 12}
 DAMAGE = {"turret": 50, "bomb": 250}
+
+SFX = {"turret": "shoot.wav", "bomb": "Explosion.wav"}
