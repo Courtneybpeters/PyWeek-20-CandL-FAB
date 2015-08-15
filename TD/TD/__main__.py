@@ -128,16 +128,17 @@ class Money(object):
         self.costs = {"turret": 10, "bomb": 15}
         self.buttons = False # Flag for making buttons out of the images
 
+    def can_buy(self, price):
+        return price <= self.value
+        # if price > self.value:
+        #     return False
+        # else:
+        #     return True
+
     def purchase(self, weapon):
         cost = self.costs[weapon]
         self.value -= cost
         print weapon, " purchased"
-
-    def can_buy(self, price):
-        if price > self.value:
-            return False
-        else:
-            return True
 
     def earn(self, gain):
         self.value += gain
