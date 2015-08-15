@@ -6,6 +6,7 @@ from money import *
 from button import *
 from weapon import *
 from unit import *
+from score import *
 
 class Game (object):
     def __init__(self, level, font_filename):
@@ -15,7 +16,7 @@ class Game (object):
         self.path = self.map.findpath()
         self.font = self.load_font(font_filename)
         self.health = Health(self.font, 15)
-        self.money = Money(self.font, 150)
+        self.money = Money(self.font, 30)
         self.weapons = []
         self.costs = {"turret": 10, "bomb": 15}
         self.buttons = [Button("turret", (0, SCREEN_HEIGHT-CELL_SIZE)),
@@ -26,6 +27,7 @@ class Game (object):
         self.active_button = None
         #todo: support multiple units
         self.unit_position = 0
+        self.score = Score(self.font)
 
     def set_state(self, state):
         self.state = state
@@ -149,6 +151,7 @@ class Game (object):
         self.health.draw(surface)
         self.money.draw(surface)
         self.money.draw_store(surface)
+        self.score.draw(surface)
 
         #draw weapons
         for weapon in self.weapons:
