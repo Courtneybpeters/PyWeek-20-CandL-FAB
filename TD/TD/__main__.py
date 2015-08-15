@@ -94,13 +94,14 @@ class Map (object):
         return solution
 
 class Weapon(object):
-    def __init__(self, location, weapon_type):
-        self.location = location
-        self.weapon_type = weapon_type
-        self.weapon_image = self.load(weapon_type)
+    def __init__(self, x, y, name, cost):
+        self.location = (x,y)
+        self.name = name
+        self.weapon_image = self.load(name)
+        self.cost = cost
 
-    def load(self, weapon_type):
-        return pygame.image.load(data.load(weapon_type+".png", 'rb'))
+    def load(self, name):
+        return pygame.image.load(data.load(name+".png", 'rb'))
 
     def draw(self, surface):
         #draw image for weapon, rotate it toward the right direction.
@@ -130,35 +131,32 @@ class Lives(object):
         surface.blit(lives_txt_obj, lives_txt_rect)
 
 class Money(object):
-    def __init__(self, font):
-        self.value = 35 # Player always starts with a little cash to start
+    def __init__(self, font, balance):
+        self.balance = balance # Player always starts with a little cash to start
         self.font = font
-        self.costs = {"turret": 10, "bomb": 15}
-        self.buttons = False # Flag for making buttons out of the images
 
-    def can_buy(self, price):
-        return price <= self.value
-        # if price > self.value:
-        #     return False
-        # else:
-        #     return True
+    def can_buy(self, weapon):
+        return weapon.cost <= self.balance
 
-    def purchase(self, weapon):
-        cost = self.costs[weapon]
-        self.value -= cost
-        print weapon, " purchased"
+    def buy(self, weapon):
+        if weapon.cost > self.balance:
+            return
+        self.balance -= weapon.cost
+        print weapon.name, " purchased"
 
     def earn(self, gain):
-        self.value += gain
+        self.balance += gain
 
     def draw(self, surface):
-        money_txt = "$" + str(self.value)
+        money_txt = "$" + str(self.balance)
         money_txt_obj = self.font.render(money_txt, True, BLACK)
         money_txt_rect = money_txt_obj.get_rect()
         money_txt_rect.topleft = (10, 0)
         surface.blit(money_txt_obj, money_txt_rect)
 
     def draw_store(self, surface):
+        pass
+        """
         turret = pygame.image.load(data.load("test_turret.png", 'rb'))
         bomb = pygame.image.load(data.load("bomb.png", 'rb'))
         t_buy_rect = pygame.Rect((0, 704), (64, 64))
@@ -169,27 +167,36 @@ class Money(object):
         if not self.buttons:
             Buttons.add_button({"t_buy":t_buy_rect, "b_buy":b_buy_rect})
             self.buttons = True
+        """
 
-class Buttons(object):
-    buttons = {}
+class Button(object):
+    def __init__(self, name, location):
+        self.selected = False
+        self.name = name
+        self.button_image = self.load(name)
+        self.location = location
+        self.button_rect = self.button_image.get_rect()
+        self.button_rect.topleft = location
+        print self.button_rect
 
-    def __init__(self):
-        pass
+    def load(self, name):
+        return pygame.image.load(data.load(name+"_button.png", 'rb'))
 
-    @staticmethod
-    def add_button(rects): # Dictionary button name: rect
-        for label, rect in rects.iteritems():
-            Buttons.buttons[label] = rect
-        print Buttons.buttons
+    def try_click(self, x, y):
+        #if x & y are in button's rect, toggle button state.
+        if self.button_rect.collidepoint(x, y):
+            self.selected = True
+            return True
+        else:
+            return False
 
-    @staticmethod
-    def get_button(x, y):
-        for label, button in Buttons.buttons.iteritems():
-            if button.collidepoint(x, y):
-                return label
-            else:
-                return None
+    def deselect(self):
+        self.selected = False
 
+    def draw(self, surface):
+        surface.blit(self.button_image, self.location)
+        if (self.selected):
+            pygame.draw.rect(surface, (0,255,0), self.button_rect.inflate(-1,-1), 2)
     #TODO: EVERYTHING SHOULD HAVE DRAW METHOD SO SHOULD BE ABLE TO DRAW A BUTTON
 
 
@@ -201,12 +208,15 @@ class Game (object):
         self.map = self.load_level(level)
         self.font = self.load_font(font_filename)
         self.lives = Lives(self.font, 15)
-        self.money = Money(self.font)
-        self.turrets = [] #TODO: Weapons class?
-        self.bombs = []
-        self.weapons = {"turrets":self.turrets, "bombs":self.bombs}
-        buttons = Buttons()
-        self.buy = ""
+        self.money = Money(self.font, 150)
+        self.weapons = []
+        self.costs = {"turret": 10, "bomb": 15}
+        self.buttons = [Button("turret", (0, SCREEN_HEIGHT-CELL_SIZE)),
+                        Button("bomb", (CELL_SIZE*2, SCREEN_HEIGHT-CELL_SIZE)),
+                       ]
+        self.active_button = None
+        #self.weapons = {"turrets":self.turrets, "bombs":self.bombs}
+        #self.buy = ""
 
     def set_state(self, state):
         self.state = state
@@ -225,9 +235,34 @@ class Game (object):
          return pygame.font.Font(data.filepath(filename), 50)
 
     def click(self, x, y):
-        selection = Buttons.get_button(x, y)
+        # if click event is in the UI tray area, unselect all buttons then
+        # select any that were clicked.
+        if (y >= SCREEN_HEIGHT - CELL_SIZE):
+            self.active_button = None
+            for button in self.buttons:
+                if not button.try_click(x, y):
+                    button.deselect()
+                else:
+                    self.active_button = button
 
-
+        #if the click event was on the map, and they have a selected button,
+        #try to purchase that item.
+        else:
+            if self.active_button:
+                map_x = x / CELL_SIZE
+                map_y = y / CELL_SIZE
+                if self.map.can_place(map_x, map_y):
+                    name = self.active_button.name
+                    weapon = Weapon(map_x, map_y, self.active_button.name,  self.costs[name])
+                    if self.money.can_buy(weapon):
+                        self.money.buy(weapon)
+                        self.weapons.append(weapon)
+                        self.map.set(map_x, map_y, TILETYPE.index("weapon"))
+                        for button in self.buttons:
+                            button.deselect() # Should we do this or no?
+                            self.active_button = None
+        print self.active_button
+        """
         if selection is not None:# Purchasing
             if "buy" in selection:
                 if "t_" in selection:
@@ -245,7 +280,7 @@ class Game (object):
 
                         pass
                         # add bomb function
-
+        """
     def place_weapon(self, x, y, weapon):
         grid_x = x / CELL_SIZE
         grid_y = y / CELL_SIZE
@@ -264,9 +299,12 @@ class Game (object):
         #draw turrets
         # turrets.append(Weapon((5, 6), "turret1"))
 
-        for turret in self.turrets:
-            turret.draw(surface)
+        for weapon in self.weapons:
+            weapon.draw(surface)
 
+        #draw purchasing buttons
+        for button in self.buttons:
+            button.draw(surface)
         #enemies and bullets aren't on grid
         #draw enemies
 
@@ -304,8 +342,8 @@ def main():
                     exit = True
             if event.type == MOUSEBUTTONDOWN:
                 x, y = event.pos
-                if Map.map_rect.collidepoint(x, y): # Check if click on map
-                    game.place_weapon(x, y, game.buy)
+                #if Map.map_rect.collidepoint(x, y): # Check if click on map
+                #    game.place_weapon(x, y, game.buy)
                 game.click(x, y)
 
             elif event.type == QUIT:
