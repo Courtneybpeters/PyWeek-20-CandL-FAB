@@ -11,7 +11,7 @@ from pygame.locals import *
 1 - path
 0 - background
 """
-TILETYPE = ["background","path","unused","unused","unused","unused","capacitors","nobuild","pathstart","pathend"]
+TILETYPE = ["background","path","weapon","unused","unused","unused","capacitors","nobuild","pathstart","pathend"]
 
 #TODO: move to config file
 SCREEN_WIDTH = 1024
@@ -43,6 +43,13 @@ class Map (object):
 
     def get(self, x, y):
         return TILETYPE[self.mapdata[y][x]]
+    def set(self, x, y, celltype):
+        self.mapdata[y][x] = celltype
+
+    def can_place(self, x, y):
+        tile = self.get(x, y)
+        if tile == "background":
+            return True
 
     def draw(self, surface):
         #surface.fill(BGCOLOR, (0, 0, SCREEN_WIDTH, SCREEN_HEIGHT))
