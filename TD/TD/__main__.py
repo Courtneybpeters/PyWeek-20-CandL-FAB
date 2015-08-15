@@ -179,6 +179,11 @@ class Buttons(object):
         for label, button in Buttons.buttons.iteritems():
             if button.collidepoint(x, y):
                 return label
+            else:
+                return None
+
+    #TODO: EVERYTHING SHOULD HAVE DRAW METHOD SO SHOULD BE ABLE TO DRAW A BUTTON
+
 
 
 class Game (object):
@@ -193,6 +198,7 @@ class Game (object):
         self.bombs = []
         self.weapons = {"turrets":self.turrets, "bombs":self.bombs}
         buttons = Buttons()
+        self.buy = ""
 
     def set_state(self, state):
         self.state = state
@@ -214,31 +220,29 @@ class Game (object):
         selection = Buttons.get_button(x, y)
 
 
-        # Purchasing
-        if "buy" in selection:
-            if "t_" in selection:
-                weapon = "turret"
-                    # TODO: Function that handles placement
-            elif "b_" in selection:
-                weapon = "bomb"
+        if selection is not None:# Purchasing
+            if "buy" in selection:
+                if "t_" in selection:
+                    self.buy = "turret"
+                        # TODO: Function that handles placement
+                elif "b_" in selection:
+                    self.buy = "bomb"
 
-            if self.money.can_buy(self.money.costs[weapon]):
-                self.money.purchase(weapon)
-                if weapon == "turret":
-                    self.turrets.append(Turret((9, 5), "turret1"))
-                if weapon == "bomb":
-                    pass
-                    # add bomb function
+                if self.money.can_buy(self.money.costs[self.buy]):
+                    self.money.purchase(self.buy)
+                    if self.buy == "turret":
+                        self.turrets.append(Turret((9, 5), "turret1"))
+                    if self.buy == "bomb":
+
+
+                        pass
+                        # add bomb function
 
     def place_weapon(self, x, y, weapon):
-        pass
-        # if self.map.get(x, y) ==
-        # check color of pixel?
-        # break the map up into rects?
-        # HALP
-
-
-
+        grid_x = x / CELL_SIZE
+        grid_y = y / CELL_SIZE
+        # if self.map.get(grid_x, grid_y) == ""
+        print "Tile type: ", self.map.get(grid_x, grid_y)
 
     def draw(self, surface):
         self.map.draw(surface)
@@ -293,7 +297,7 @@ def main():
             if event.type == MOUSEBUTTONDOWN:
                 x, y = event.pos
                 if Map.map_rect.collidepoint(x, y): # Check if click on map
-                    pass # TODO: Placement function
+                    game.place_weapon(x, y, game.buy)
                 game.click(x, y)
 
             elif event.type == QUIT:
