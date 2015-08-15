@@ -15,6 +15,7 @@ def main():
     p = 0
     #HACK: play music here - TODO: play music in game class.
     pygame.mixer.music.load(data.filepath("bg_1.ogg"))
+    pygame.mixer.music.set_volume(.2)
     pygame.mixer.music.play(-1)
     while not exit:
         text = "FPS: {0:.2f}".format(clock.get_fps())

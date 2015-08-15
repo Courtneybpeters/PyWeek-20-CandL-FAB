@@ -1,13 +1,14 @@
 import math
 
 class Bullet(object):
-    def __init__(self, speed, location, target_unit, color, size, damage):
+    def __init__(self, speed, location, target_unit, color, size, sfx, damage):
         self.speed = speed
         self.location = location
         self.damage = damage
         self.target_unit = target_unit
         self.color = color
         self.size = size
+        self.sfx = sfx
         self.hit = False
 
     def has_hit(self):
