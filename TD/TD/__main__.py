@@ -86,24 +86,25 @@ class Map (object):
             solution.append(end)
         return solution
 
-class Turret (object):
-    def __init__(self, location, turret_type):
+class Weapon(object):
+    def __init__(self, location, weapon_type):
         self.location = location
-        self.turret_type = turret_type
-        self.turret_image = self.load(turret_type)
+        self.weapon_type = weapon_type
+        self.weapon_image = self.load(weapon_type)
 
-    def load(self, turret_type):
-        return pygame.image.load(data.load(turret_type+".png", 'rb'))
+    def load(self, weapon_type):
+        return pygame.image.load(data.load(weapon_type+".png", 'rb'))
 
     def draw(self, surface):
-        if self.turret_type == "turret1":
-            surface.blit(self.turret_image, (self.location[0]*CELL_SIZE, self.location[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE))
+        #draw image for weapon, rotate it toward the right direction.
+        #if self.weapon_type == "turret1":
+        surface.blit(self.weapon_image, (self.location[0]*CELL_SIZE, self.location[1]*CELL_SIZE, CELL_SIZE, CELL_SIZE))
 
 class Bomb(object):
     def __init__(self, location):
         self.location = location
 
-class Lives (object):
+class Lives(object):
     DATA_TXT = "DATA! DATA! DATA!"
 
     def __init__(self, font, lives):
@@ -231,7 +232,7 @@ class Game (object):
                 if self.money.can_buy(self.money.costs[self.buy]):
                     self.money.purchase(self.buy)
                     if self.buy == "turret":
-                        self.turrets.append(Turret((9, 5), "turret1"))
+                        self.turrets.append(Weapon((9, 5), "turret1"))
                     if self.buy == "bomb":
 
 
@@ -254,7 +255,7 @@ class Game (object):
         self.money.draw_store(surface)
 
         #draw turrets
-        # turrets.append(Turret((5, 6), "turret1"))
+        # turrets.append(Weapon((5, 6), "turret1"))
 
         for turret in self.turrets:
             turret.draw(surface)
