@@ -31,8 +31,9 @@ class Game (object):
         self.lifelost = pygame.mixer.Sound(data.filepath("LiveLost.wav"))
 
         self.difficulty = .5
-        self.tickstowave = 2000
+        self.tickstowave = 000
         self.wavespawns = 0
+        self.spawntype = 0
 
     def set_state(self, state):
         self.state = state
@@ -46,15 +47,18 @@ class Game (object):
         self.elapsed += amount
         steps = int(self.elapsed) - int(prev_elapsed)
 
-
         #for tests, spawn a unit every 100 steps and hurt all units every 100 steps
         if self.wavespawns > 0:
-            if self.elapsed % 300 == 0:
-                self.units[utils.get_id()] = Unit("strongman", 1000 * self.difficulty, 3, self.path)
+            if self.elapsed % max((150 - self.difficulty * 10), 50) == 0:
+                if self.spawntype == 0:
+                    self.spawntype = 1
+                else:
+                    self.spawntype = 0
                 self.wavespawns -= 1
-            elif self.elapsed % 300 == 250:
-                self.units[utils.get_id()] = Unit("quickman", 500 * self.difficulty, 6, self.path)
-                self.wavespawns -= 1
+                if self.spawntype == 0:
+                    self.units[utils.get_id()] = Unit("quickman", 500 * self.difficulty, 6, self.path)
+                else:
+                    self.units[utils.get_id()] = Unit("strongman", 1000 * self.difficulty, 3, self.path)
 
 
         for i in range(steps): #simulate the world for x steps
@@ -67,7 +71,7 @@ class Game (object):
             if self.tickstowave <= 0:
                 self.difficulty += .5
                 self.tickstowave = 1000
-                self.wavespawns = 10 * self.difficulty
+                self.wavespawns = 16 #* self.difficulty
 
 
             for weapon in self.weapons:
@@ -89,10 +93,9 @@ class Game (object):
             for id, unit in self.units.iteritems():
                 if unit.is_dead():
                     dead_units.append(id)
-                    self.money.earn(5)
+                    self.money.earn(4)
                     self.score.add()
                 elif unit.has_won():
-                    print "Unit won!"
                     dead_units.append(id)
                     self.health.hurt(1)
                     self.lifelost.play()
@@ -138,34 +141,13 @@ class Game (object):
                         self.money.buy(weapon)
                         self.weapons.append(weapon)
                         self.map.set(map_x, map_y, TILETYPE.index("weapon"))
-                        for button in self.buttons:
-                            button.deselect() # Should we do this or no?
-                            self.active_button = None
-        print self.active_button
-        """
-        if selection is not None:# Purchasing
-            if "buy" in selection:
-                if "t_" in selection:
-                    self.buy = "turret"
-                        # TODO: Function that handles placement
-                elif "b_" in selection:
-                    self.buy = "bomb"
+                        #for button in self.buttons:
+                        #    button.deselect() # Should we do this or no?
+                        #    self.active_button = None
 
-                if self.money.can_buy(self.money.costs[self.buy]):
-                    self.money.purchase(self.buy)
-                    if self.buy == "turret":
-                        self.turrets.append(Weapon((9, 5), "turret1"))
-                    if self.buy == "bomb":
-
-
-                        pass
-                        # add bomb function
-        """
     def place_weapon(self, x, y, weapon):
         grid_x = x / CELL_SIZE
         grid_y = y / CELL_SIZE
-        # if self.map.get(grid_x, grid_y) == ""
-        print "Tile type: ", self.map.get(grid_x, grid_y)
 
     def draw(self, surface):
         if self.state == "playing":

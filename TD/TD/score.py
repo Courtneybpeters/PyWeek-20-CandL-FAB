@@ -13,7 +13,6 @@ class Score(object):
     def draw(self, surface):
         score_txt = "Killed: " + str(self.score)
         score_txt_obj = self.font.render(score_txt, True, BLACK)
-        # print "score text size: ", self.font.size(score_txt)
         score_txt_rect = score_txt_obj.get_rect()
         score_txt_rect.bottomright = (SCREEN_WIDTH-10, SCREEN_HEIGHT)
         surface.blit(score_txt_obj, score_txt_rect)

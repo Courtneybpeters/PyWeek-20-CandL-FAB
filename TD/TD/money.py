@@ -12,7 +12,6 @@ class Money(object):
         if weapon.cost > self.balance:
             return
         self.balance -= weapon.cost
-        print weapon.name, " purchased"
 
     def earn(self, gain):
         self.balance += gain

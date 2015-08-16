@@ -37,9 +37,7 @@ class Unit(object):
         #draw their health bar.
         green_width = CELL_SIZE*(float(self.health)/self.max_health)
         health_green_rect = (self.path[p][0], self.path[p][1], green_width, 5)
-        #print health_green_rect
         health_red_rect = (self.path[p][0]+green_width, self.path[p][1], CELL_SIZE-green_width, 5)
-        #print health_red_rect
         surface.blit(self.unit_image, (self.path[p][0], self.path[p][1], CELL_SIZE, CELL_SIZE))
         pygame.draw.rect(surface, (0,255,0), health_green_rect)
         pygame.draw.rect(surface, (255,0,0), health_red_rect)
@@ -48,5 +46,4 @@ class Unit(object):
         self.health -= amount
 
     def load_image(self, name):
-        print name
         return pygame.image.load(data.load(name+".png", 'rb'))

@@ -8,7 +8,6 @@ class Button(object):
         self.location = location
         self.button_rect = self.button_image.get_rect()
         self.button_rect.topleft = location
-        print self.button_rect
 
     def load(self, name):
         return pygame.image.load(data.load(name+"_button.png", 'rb'))
